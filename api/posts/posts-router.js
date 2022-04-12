@@ -43,11 +43,14 @@ router.post('/', (req, res) => {
      })
  } else {
      Post.insert({ title, contents })
-     .then(({ id}) => {
+     .then(({ id }) => {
          return Post.findById(id)
      })
      .then(post => {
-         res.status(201).json({
+         res.status(201).json(post)
+     })
+     .catch(err => {
+         res.status(500).json({
              message: "There was an error while saving the post to the database",
              err: err.message,
              stack: err.stack,
@@ -55,8 +58,24 @@ router.post('/', (req, res) => {
      })
  }
 })
-router.delete('/:id', (req, res) => {
-
+router.delete('/:id', async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id)
+        if (!post) {
+            res.status(404).json({
+                message: 'he post with the specified ID does not exist',
+            })
+        } else {
+            await Post.remove(req.params.id)
+            res.json(post)
+        }
+    } catch (er) {
+        res.status(500).json({
+            message: "The post information could not be modified",
+            err: err.message,
+            stack: err.stack,
+        })
+    }
 })
 router.put('/:id', (req, res) => {
 
