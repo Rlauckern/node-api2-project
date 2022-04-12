@@ -1,6 +1,6 @@
 // implement your posts router here
-const express = require('express');
+const express = require('express') 
 
 const router = express.Router()
 
-moduleexports = router
+module.exports = router
